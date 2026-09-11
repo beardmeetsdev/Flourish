@@ -35,6 +35,10 @@ h1, h2, h3, p {
   color: var(--muted);
 }
 
+.muted {
+  color: var(--muted);
+}
+
 .card {
   background: var(--card);
   border: 1px solid var(--border);
@@ -86,10 +90,6 @@ button[type="submit"] {
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-}
-
-.hidden {
-  display: none;
 }
 
 .result.flourishing {

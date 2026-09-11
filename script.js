@@ -90,7 +90,8 @@ function calculateStatus(responses) {
 
 function renderResult(status) {
   const isFlourishing = status === "Flourishing";
-  result.className = `card result ${isFlourishing ? "flourishing" : "languishing"}`;
+  result.classList.remove("initial", "flourishing", "languishing");
+  result.classList.add(isFlourishing ? "flourishing" : "languishing");
   result.innerHTML = `
     <p class="status ${isFlourishing ? "flourishing" : "languishing"}">${status}</p>
     <p>${isFlourishing ? "You met the flourishing criteria today." : "You did not meet the full flourishing criteria today."}</p>
@@ -111,7 +112,8 @@ function saveHistory(history) {
 }
 
 function upsertTodayRecord(status, responses) {
-  const date = new Date().toISOString().slice(0, 10);
+  const today = new Date();
+  const date = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
   const history = getHistory();
   const record = { date, status, responses };
   const existingIndex = history.findIndex((entry) => entry.date === date);
