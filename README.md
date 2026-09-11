@@ -1,2 +1,7 @@
 # Flourish
-A web app that turns a photo document into a daily questionnaire with Languishing/Flourishing ratings
+
+A simple single-page web app for a daily Flourishing assessment questionnaire.
+
+## Run locally
+
+Open `/home/runner/work/Flourish/Flourish/index.html` in a browser.
