@@ -93,10 +93,20 @@ function renderResult(status) {
   const isFlourishing = status === "Flourishing";
   resultCard.classList.remove("initial", "flourishing", "languishing");
   resultCard.classList.add(isFlourishing ? "flourishing" : "languishing");
-  result.innerHTML = `
-    <p class="status ${isFlourishing ? "flourishing" : "languishing"}">${status}</p>
-    <p>${isFlourishing ? "You met the flourishing criteria today." : "You did not meet the full flourishing criteria today."}</p>
-  `;
+  result.className = "";
+  result.textContent = "";
+
+  const statusText = document.createElement("p");
+  statusText.className = `status ${isFlourishing ? "flourishing" : "languishing"}`;
+  statusText.textContent = status;
+
+  const message = document.createElement("p");
+  message.textContent = isFlourishing
+    ? "You met the flourishing criteria today."
+    : "You did not meet the full flourishing criteria today.";
+
+  result.appendChild(statusText);
+  result.appendChild(message);
 }
 
 function getHistory() {
@@ -140,7 +150,14 @@ function renderHistory() {
 
   history.forEach((entry) => {
     const item = document.createElement("li");
-    item.innerHTML = `<span>${entry.date}</span><strong>${entry.status}</strong>`;
+    const date = document.createElement("span");
+    date.textContent = String(entry.date);
+
+    const status = document.createElement("strong");
+    status.textContent = String(entry.status);
+
+    item.appendChild(date);
+    item.appendChild(status);
     historyList.appendChild(item);
   });
 }
