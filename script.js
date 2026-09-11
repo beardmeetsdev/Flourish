@@ -143,6 +143,20 @@ function addRecord(status, responses) {
   return history;
 }
 
+function formatHistoryDate(entry) {
+  const baseDate = String(entry.date);
+  if (!entry.submittedAt) {
+    return baseDate;
+  }
+
+  const parsed = new Date(entry.submittedAt);
+  if (Number.isNaN(parsed.getTime())) {
+    return baseDate;
+  }
+
+  return `${baseDate} ${parsed.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
+}
+
 function renderHistory() {
   const history = getHistory();
   historyList.innerHTML = "";
@@ -157,10 +171,7 @@ function renderHistory() {
   history.forEach((entry) => {
     const item = document.createElement("li");
     const date = document.createElement("span");
-    const timeSuffix = entry.submittedAt
-      ? ` ${new Date(entry.submittedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
-      : "";
-    date.textContent = `${String(entry.date)}${timeSuffix}`;
+    date.textContent = formatHistoryDate(entry);
 
     const status = document.createElement("strong");
     status.textContent = String(entry.status);
