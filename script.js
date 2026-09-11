@@ -36,6 +36,7 @@ const groups = [
 ];
 
 const form = document.getElementById("assessment-form");
+const resultCard = document.getElementById("result-card");
 const result = document.getElementById("result");
 const historyList = document.getElementById("history-list");
 
@@ -90,8 +91,8 @@ function calculateStatus(responses) {
 
 function renderResult(status) {
   const isFlourishing = status === "Flourishing";
-  result.classList.remove("initial", "flourishing", "languishing");
-  result.classList.add(isFlourishing ? "flourishing" : "languishing");
+  resultCard.classList.remove("initial", "flourishing", "languishing");
+  resultCard.classList.add(isFlourishing ? "flourishing" : "languishing");
   result.innerHTML = `
     <p class="status ${isFlourishing ? "flourishing" : "languishing"}">${status}</p>
     <p>${isFlourishing ? "You met the flourishing criteria today." : "You did not meet the full flourishing criteria today."}</p>
