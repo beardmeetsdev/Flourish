@@ -44,13 +44,17 @@ function buildForm() {
   groups.forEach((group) => {
     const section = document.createElement("section");
     section.className = "card question-group";
-    section.innerHTML = `<h2>${group.name}</h2>`;
+    const groupHeading = document.createElement("h2");
+    groupHeading.textContent = group.name;
+    section.appendChild(groupHeading);
 
     group.questions.forEach((question, qIndex) => {
       const id = `${group.key}-${qIndex}`;
       const wrapper = document.createElement("fieldset");
       wrapper.className = "question";
-      wrapper.innerHTML = `<legend>${question}</legend>`;
+      const legend = document.createElement("legend");
+      legend.textContent = question;
+      wrapper.appendChild(legend);
 
       const options = document.createElement("div");
       options.className = "options";
@@ -59,10 +63,15 @@ function buildForm() {
         const optionId = `${id}-${score}`;
         const label = document.createElement("label");
         label.setAttribute("for", optionId);
-        label.innerHTML = `
-          <input id="${optionId}" type="radio" name="${id}" value="${score}" required />
-          ${score}
-        `;
+        const input = document.createElement("input");
+        input.id = optionId;
+        input.type = "radio";
+        input.name = id;
+        input.value = String(score);
+        input.required = true;
+
+        label.appendChild(input);
+        label.appendChild(document.createTextNode(String(score)));
         options.appendChild(label);
       }
 
@@ -122,18 +131,13 @@ function saveHistory(history) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
 }
 
-function upsertTodayRecord(status, responses) {
+function addRecord(status, responses) {
   const today = new Date();
+  const submittedAt = today.toISOString();
   const date = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
   const history = getHistory();
-  const record = { date, status, responses };
-  const existingIndex = history.findIndex((entry) => entry.date === date);
-
-  if (existingIndex >= 0) {
-    history[existingIndex] = record;
-  } else {
-    history.unshift(record);
-  }
+  const record = { date, submittedAt, status, responses };
+  history.unshift(record);
 
   saveHistory(history);
   return history;
@@ -144,14 +148,19 @@ function renderHistory() {
   historyList.innerHTML = "";
 
   if (!history.length) {
-    historyList.innerHTML = "<li>No submissions yet.</li>";
+    const item = document.createElement("li");
+    item.textContent = "No submissions yet.";
+    historyList.appendChild(item);
     return;
   }
 
   history.forEach((entry) => {
     const item = document.createElement("li");
     const date = document.createElement("span");
-    date.textContent = String(entry.date);
+    const timeSuffix = entry.submittedAt
+      ? ` ${new Date(entry.submittedAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`
+      : "";
+    date.textContent = `${String(entry.date)}${timeSuffix}`;
 
     const status = document.createElement("strong");
     status.textContent = String(entry.status);
@@ -177,7 +186,7 @@ form.addEventListener("submit", (event) => {
 
   const status = calculateStatus(responses);
   renderResult(status);
-  upsertTodayRecord(status, responses);
+  addRecord(status, responses);
   renderHistory();
 });
 
